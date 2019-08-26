@@ -21,7 +21,8 @@ namespace Microsoft.Health.Fhir.Core
         {
             get
             {
-                return ModelInfo.Version;
+                var version = new Version(ModelInfo.Version);
+                return version.ToString(2);
             }
         }
 
