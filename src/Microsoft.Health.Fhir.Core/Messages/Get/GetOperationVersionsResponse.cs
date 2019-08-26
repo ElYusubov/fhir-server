@@ -4,19 +4,18 @@
 // -------------------------------------------------------------------------------------------------
 
 using EnsureThat;
-using Microsoft.Health.Fhir.Core.Models;
 
 namespace Microsoft.Health.Fhir.Core.Messages.Get
 {
     public class GetOperationVersionsResponse
     {
-        public GetOperationVersionsResponse(ResourceElement operationVersionsStatement)
+        public GetOperationVersionsResponse(string operationVersionsStatement)
         {
             EnsureArg.IsNotNull(operationVersionsStatement, nameof(operationVersionsStatement));
 
             OperationVersionsStatement = operationVersionsStatement;
         }
 
-        public ResourceElement OperationVersionsStatement { get; }
+        public string OperationVersionsStatement { get; }
     }
 }

@@ -13,6 +13,8 @@ namespace Microsoft.Health.Fhir.Core.Models
     {
         FhirSpecification Version { get; }
 
+        string SupportedVersion { get; }
+
         string GetFhirTypeNameForType(Type type);
 
         bool IsKnownResource(string name);

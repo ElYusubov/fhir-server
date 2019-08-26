@@ -26,6 +26,7 @@ using Microsoft.Health.Fhir.Api.Features.Security;
 using Microsoft.Health.Fhir.Core.Extensions;
 using Microsoft.Health.Fhir.Core.Features;
 using Microsoft.Health.Fhir.Core.Features.Context;
+using Microsoft.Health.Fhir.Core.Features.Operations.Export.Models;
 using Microsoft.Health.Fhir.Core.Features.Persistence;
 using Microsoft.Health.Fhir.Core.Features.Routing;
 using Microsoft.Health.Fhir.Core.Messages.Delete;
@@ -466,9 +467,12 @@ namespace Microsoft.Health.Fhir.Api.Controllers
         [Route(KnownRoutes.Versions)]
         public async Task<IActionResult> Versions()
         {
-            ResourceElement response = await _mediator.GetOperationVersionsAsync(HttpContext.RequestAborted);
+            string response = await _mediator.GetOperationVersionsAsync(HttpContext.RequestAborted);
 
-            return FhirResult.Create(response);
+            // TODO: Conversion to list should be abstracted to the controller.
+            var list = new List<string> { response };
+            var versionsJobResult = new VersionsResult(list, response);
+            return new OperationVersionsResult(versionsJobResult, HttpStatusCode.OK);
         }
     }
 }

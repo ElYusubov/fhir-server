@@ -120,7 +120,7 @@ namespace Microsoft.Health.Fhir.Core.Extensions
             return response.CapabilityStatement;
         }
 
-        public static async Task<ResourceElement> GetOperationVersionsAsync(this IMediator mediator, CancellationToken cancellationToken = default)
+        public static async Task<string> GetOperationVersionsAsync(this IMediator mediator, CancellationToken cancellationToken = default)
         {
             EnsureArg.IsNotNull(mediator, nameof(mediator));
 
