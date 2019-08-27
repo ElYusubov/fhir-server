@@ -3,11 +3,17 @@
 // Licensed under the MIT License (MIT). See LICENSE in the repo root for license information.
 // -------------------------------------------------------------------------------------------------
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using EnsureThat;
 using Hl7.Fhir.Model;
+using Hl7.Fhir.Rest;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Health.Fhir.Core.Features.Operations.Export.Models;
+using Microsoft.Net.Http.Headers;
+using Task = System.Threading.Tasks.Task;
 
 namespace Microsoft.Health.Fhir.Api.Features.ActionResults
 {
@@ -17,6 +23,7 @@ namespace Microsoft.Health.Fhir.Api.Features.ActionResults
     public class OperationVersionsResult : BaseActionResult<VersionsResult>
     {
         private readonly VersionsResult _versionsResult;
+        private IList<MediaTypeHeaderValue> _acceptHeaders;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OperationVersionsResult"/> class.
@@ -30,24 +37,33 @@ namespace Microsoft.Health.Fhir.Api.Features.ActionResults
             _versionsResult = versionsResult;
         }
 
-        // TODO: Delete?
-        ////public override Task ExecuteResultAsync(ActionContext context) // This will have accept header info
-        ////{
-        ////    // Pull out accept headers and modify result format
-        ////    return base.ExecuteResultAsync(context);
-        ////}
+        public override Task ExecuteResultAsync(ActionContext context)
+        {
+            _acceptHeaders = context.HttpContext.Request.GetTypedHeaders().Accept;
+            return base.ExecuteResultAsync(context);
+        }
 
         protected override object GetResultToSerialize()
         {
-            // TODO: determine whether or not this should happen using the accept headers.
-            var supportedVersion = new FhirString(_versionsResult.Versions.First());
-            var defaultVersion = new FhirString(_versionsResult.DefaultVersion);
+            if (_acceptHeaders != null && _acceptHeaders.All(a => a.MediaType != "*/*"))
+            {
+                foreach (MediaTypeHeaderValue acceptHeader in _acceptHeaders)
+                {
+                    if (acceptHeader.ToString() == ContentType.JSON_CONTENT_HEADER || acceptHeader.ToString() == ContentType.XML_CONTENT_HEADER)
+                    {
+                        var supportedVersion = new FhirString(_versionsResult.Versions.First());
+                        var defaultVersion = new FhirString(_versionsResult.DefaultVersion);
 
-            Parameters parameters = new Parameters()
-                .Add("version", supportedVersion)
-                .Add("default", defaultVersion);
+                        Parameters parameters = new Parameters()
+                            .Add("version", supportedVersion)
+                            .Add("default", defaultVersion);
 
-            return parameters;
+                        return parameters;
+                    }
+                }
+            }
+
+            return _versionsResult;
         }
     }
 }
