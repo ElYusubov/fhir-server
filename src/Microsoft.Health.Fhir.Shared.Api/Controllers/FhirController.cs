@@ -467,12 +467,9 @@ namespace Microsoft.Health.Fhir.Api.Controllers
         [Route(KnownRoutes.Versions)]
         public async Task<IActionResult> Versions()
         {
-            string response = await _mediator.GetOperationVersionsAsync(HttpContext.RequestAborted);
+            VersionsResult response = await _mediator.GetOperationVersionsAsync(HttpContext.RequestAborted);
 
-            // TODO: Conversion to list should be abstracted to the controller.
-            var list = new List<string> { response };
-            var versionsJobResult = new VersionsResult(list, response);
-            return new OperationVersionsResult(versionsJobResult, HttpStatusCode.OK);
+            return new OperationVersionsResult(response, HttpStatusCode.OK);
         }
     }
 }

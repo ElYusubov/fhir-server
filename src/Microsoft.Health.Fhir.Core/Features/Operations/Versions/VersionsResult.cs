@@ -14,7 +14,7 @@ namespace Microsoft.Health.Fhir.Core.Features.Operations.Export.Models
     /// </summary>
     public class VersionsResult
     {
-        public VersionsResult(List<string> versions, string defaultVersion)
+        public VersionsResult(IReadOnlyCollection<string> versions, string defaultVersion)
         {
             EnsureArg.IsNotNull(versions, nameof(versions));
             EnsureArg.IsNotNull(defaultVersion, nameof(defaultVersion));
@@ -24,7 +24,7 @@ namespace Microsoft.Health.Fhir.Core.Features.Operations.Export.Models
         }
 
         [JsonProperty("versions")]
-        public List<string> Versions { get; }
+        public IReadOnlyCollection<string> Versions { get; }
 
         [JsonProperty("default")]
         public string DefaultVersion { get; }

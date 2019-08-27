@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EnsureThat;
 using MediatR;
+using Microsoft.Health.Fhir.Core.Features.Operations.Export.Models;
 using Microsoft.Health.Fhir.Core.Features.Persistence;
 using Microsoft.Health.Fhir.Core.Messages.Create;
 using Microsoft.Health.Fhir.Core.Messages.Delete;
@@ -120,13 +121,13 @@ namespace Microsoft.Health.Fhir.Core.Extensions
             return response.CapabilityStatement;
         }
 
-        public static async Task<string> GetOperationVersionsAsync(this IMediator mediator, CancellationToken cancellationToken = default)
+        public static async Task<VersionsResult> GetOperationVersionsAsync(this IMediator mediator, CancellationToken cancellationToken = default)
         {
             EnsureArg.IsNotNull(mediator, nameof(mediator));
 
             var response = await mediator.Send(new GetOperationVersionsRequest(), cancellationToken);
 
-            return response.OperationVersionsStatement;
+            return new VersionsResult(response.SupportedVersions, response.DefaultVersion);
         }
     }
 }

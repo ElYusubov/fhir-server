@@ -3,13 +3,17 @@
 // Licensed under the MIT License (MIT). See LICENSE in the repo root for license information.
 // -------------------------------------------------------------------------------------------------
 
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using EnsureThat;
+using MediatR;
 using Microsoft.Health.Fhir.Core.Messages.Get;
 using Microsoft.Health.Fhir.Core.Models;
 
 namespace Microsoft.Health.Fhir.Shared.Core.Features.Conformance
 {
-    public class GetOperationVersionsHandler : RequestHandler<GetOperationVersionsRequest, GetOperationVersionsResponse>
+    public class GetOperationVersionsHandler : IRequestHandler<GetOperationVersionsRequest, GetOperationVersionsResponse>
     {
         private readonly IModelInfoProvider _provider;
 
@@ -20,10 +24,22 @@ namespace Microsoft.Health.Fhir.Shared.Core.Features.Conformance
             _provider = provider;
         }
 
-        protected override GetOperationVersionsResponse Handle(GetOperationVersionsRequest request)
+        Task<GetOperationVersionsResponse> IRequestHandler<GetOperationVersionsRequest, GetOperationVersionsResponse>.
+            Handle(GetOperationVersionsRequest request, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(Handle(request));
+        }
+
+        protected GetOperationVersionsResponse Handle(GetOperationVersionsRequest request)
         {
             EnsureArg.IsNotNull(request, nameof(request));
-            return new GetOperationVersionsResponse(_provider.SupportedVersion);
+
+            var truncatedVersion = _provider.SupportedVersion.ToString(2);
+
+            var supportedVersions = new List<string> { truncatedVersion };
+            var defaultVersion = truncatedVersion;
+
+            return new GetOperationVersionsResponse(supportedVersions, defaultVersion);
         }
     }
 }

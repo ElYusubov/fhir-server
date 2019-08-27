@@ -3,19 +3,24 @@
 // Licensed under the MIT License (MIT). See LICENSE in the repo root for license information.
 // -------------------------------------------------------------------------------------------------
 
+using System.Collections.Generic;
 using EnsureThat;
 
 namespace Microsoft.Health.Fhir.Core.Messages.Get
 {
     public class GetOperationVersionsResponse
     {
-        public GetOperationVersionsResponse(string operationVersionsStatement)
+        public GetOperationVersionsResponse(List<string> supportedVersions, string defaultVersion)
         {
-            EnsureArg.IsNotNull(operationVersionsStatement, nameof(operationVersionsStatement));
+            EnsureArg.IsNotNull(supportedVersions, nameof(supportedVersions));
+            EnsureArg.IsNotNull(defaultVersion, nameof(defaultVersion));
 
-            OperationVersionsStatement = operationVersionsStatement;
+            SupportedVersions = supportedVersions;
+            DefaultVersion = defaultVersion;
         }
 
-        public string OperationVersionsStatement { get; }
+        public IReadOnlyCollection<string> SupportedVersions { get; }
+
+        public string DefaultVersion { get; }
     }
 }

@@ -22,7 +22,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Features\Conformance\IConfiguredConformanceProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\Conformance\ISystemConformanceProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\Conformance\ListedContactPoint.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Features\Conformance\RequestHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\Conformance\SystemConformanceProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\DefaultParserSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\Definition\CompartmentDefinitionManager.cs" />

@@ -17,12 +17,11 @@ namespace Microsoft.Health.Fhir.Core
     /// </summary>
     public partial class VersionSpecificModelInfoProvider : IModelInfoProvider
     {
-        public string SupportedVersion
+        public Version SupportedVersion
         {
             get
             {
-                var version = new Version(ModelInfo.Version);
-                return version.ToString(2);
+                return new Version(ModelInfo.Version);
             }
         }
 
