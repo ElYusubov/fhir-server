@@ -19,7 +19,8 @@ namespace Microsoft.Health.Fhir.Core.Messages.Get
             DefaultVersion = defaultVersion;
         }
 
-        public IReadOnlyCollection<string> SupportedVersions { get; }
+        // TODO: Figure out how to make this a serializable (in VersionResult.cs) and of type IReadOnlyCollection<string>.
+        public List<string> SupportedVersions { get; }
 
         public string DefaultVersion { get; }
     }

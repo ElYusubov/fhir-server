@@ -4,6 +4,7 @@
 // -------------------------------------------------------------------------------------------------
 
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using EnsureThat;
 using Newtonsoft.Json;
 
@@ -12,9 +13,10 @@ namespace Microsoft.Health.Fhir.Core.Features.Operations.Export.Models
     /// <summary>
     /// Class used to hold data that needs to be returned to the client when the versions operation completes.
     /// </summary>
+    [XmlRoot("versions")]
     public class VersionsResult
     {
-        public VersionsResult(IReadOnlyCollection<string> versions, string defaultVersion)
+        public VersionsResult(List<string> versions, string defaultVersion)
         {
             EnsureArg.IsNotNull(versions, nameof(versions));
             EnsureArg.IsNotNull(defaultVersion, nameof(defaultVersion));
@@ -23,10 +25,16 @@ namespace Microsoft.Health.Fhir.Core.Features.Operations.Export.Models
             DefaultVersion = defaultVersion;
         }
 
-        [JsonProperty("versions")]
-        public IReadOnlyCollection<string> Versions { get; }
+        public VersionsResult()
+        {
+        }
 
+        [XmlElement("version")]
+        [JsonProperty("versions")]
+        public List<string> Versions { get; }
+
+        [XmlElement("default")]
         [JsonProperty("default")]
-        public string DefaultVersion { get; }
+        public string DefaultVersion { get; set; }
     }
 }
