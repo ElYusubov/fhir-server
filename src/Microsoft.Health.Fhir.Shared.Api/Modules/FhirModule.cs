@@ -133,6 +133,11 @@ namespace Microsoft.Health.Fhir.Api.Modules
                     .Singleton()
                     .AsSelf()
                     .AsService<TextOutputFormatter>();
+
+                services.Add<XmlSerializerOutputFormatter>()
+                    .Singleton()
+                    .AsSelf()
+                    .AsService<TextOutputFormatter>();
             }
 
             services.Add<FhirRequestContextAccessor>()

@@ -53,30 +53,36 @@ namespace Microsoft.Health.Fhir.Api.Features.ActionResults
                 foreach (MediaTypeHeaderValue acceptHeader in _acceptHeaders)
                 {
                     // If the accept header is application/[json/xml]
-                    if (acceptHeader.SubType.ToString() == ContentType.FORMAT_PARAM_XML || acceptHeader.SubType.ToString() == ContentType.FORMAT_PARAM_JSON)
+                    if (acceptHeader.SubType.ToString() == ContentType.FORMAT_PARAM_XML ||
+                        acceptHeader.SubType.ToString() == ContentType.FORMAT_PARAM_JSON)
                     {
                         // Follow the format outlined in the spec: https://www.hl7.org/fhir/capabilitystatement-operation-versions.html.
                         return _versionsResult;
                     }
 
                     // If the accept header is application/fhir+[json/xml]
-                    if (acceptHeader.ToString() == ContentType.JSON_CONTENT_HEADER || acceptHeader.ToString() == ContentType.XML_CONTENT_HEADER)
+                    if (acceptHeader.ToString() == ContentType.JSON_CONTENT_HEADER ||
+                        acceptHeader.ToString() == ContentType.XML_CONTENT_HEADER)
                     {
-                        var supportedVersion = new FhirString(_versionsResult.Versions.First());
-                        var defaultVersion = new FhirString(_versionsResult.DefaultVersion);
-
                         // The returned information should be formatted as a Parameters object.
-                        Parameters parameters = new Parameters()
-                            .Add("version", supportedVersion)
-                            .Add("default", defaultVersion);
-
-                        return parameters;
+                        return FormatVersionsResultAsParameters();
                     }
                 }
             }
 
-            // TODO: If this point is reached, someone called the $versions endpoint without specifying an appropriate accept header. What should happen?
-            return _versionsResult;
+            // If no accept header is specified, return the versions result as a JSON-formatted Parameters object.
+            return FormatVersionsResultAsParameters();
+        }
+
+        private Parameters FormatVersionsResultAsParameters()
+        {
+            var supportedVersion = new FhirString(_versionsResult.Versions.First());
+            var defaultVersion = new FhirString(_versionsResult.DefaultVersion);
+
+            Parameters parameters = new Parameters()
+                .Add("version", supportedVersion)
+                .Add("default", defaultVersion);
+            return parameters;
         }
     }
 }

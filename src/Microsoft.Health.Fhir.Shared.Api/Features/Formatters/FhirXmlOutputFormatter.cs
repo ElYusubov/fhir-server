@@ -7,7 +7,6 @@ using System;
 using System.IO;
 using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
 using EnsureThat;
 using Hl7.Fhir.Model;
 using Hl7.Fhir.Serialization;
@@ -15,7 +14,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Logging;
 using Microsoft.Health.Fhir.Api.Features.ContentTypes;
-using Microsoft.Health.Fhir.Core.Features.Operations.Export.Models;
 using Task = System.Threading.Tasks.Task;
 
 namespace Microsoft.Health.Fhir.Api.Features.Formatters
@@ -24,7 +22,6 @@ namespace Microsoft.Health.Fhir.Api.Features.Formatters
     {
         private readonly FhirXmlSerializer _fhirXmlSerializer;
         private readonly ILogger<FhirXmlOutputFormatter> _logger;
-        private bool _isVersionsResult;
 
         public FhirXmlOutputFormatter(FhirXmlSerializer fhirXmlSerializer, ILogger<FhirXmlOutputFormatter> logger)
         {
@@ -45,14 +42,6 @@ namespace Microsoft.Health.Fhir.Api.Features.Formatters
         protected override bool CanWriteType(Type type)
         {
             EnsureArg.IsNotNull(type, nameof(type));
-
-            // TODO: Move this to a new formatter.
-            if (typeof(VersionsResult).IsAssignableFrom(type))
-            {
-                _isVersionsResult = true;
-                return true;
-            }
-
             return typeof(Resource).IsAssignableFrom(type);
         }
 
@@ -65,21 +54,7 @@ namespace Microsoft.Health.Fhir.Api.Features.Formatters
             using (TextWriter textWriter = context.WriterFactory(response.Body, selectedEncoding))
             using (var writer = new XmlTextWriter(textWriter))
             {
-                // TODO: Move this to a new formatter.
-                if (_isVersionsResult)
-                {
-                    var namespaces = new XmlSerializerNamespaces();
-                    namespaces.Add(string.Empty, string.Empty);
-
-                    var serializer = new XmlSerializer(typeof(VersionsResult));
-                    serializer.Serialize(writer, context.Object, namespaces);
-
-                    _isVersionsResult = false;
-                }
-                else
-                {
-                    _fhirXmlSerializer.Serialize((Resource)context.Object, writer, context.HttpContext.GetSummaryType(_logger));
-                }
+                _fhirXmlSerializer.Serialize((Resource)context.Object, writer, context.HttpContext.GetSummaryType(_logger));
             }
 
             return Task.CompletedTask;
