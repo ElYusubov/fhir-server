@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Health.Fhir.Core;
+using Microsoft.Health.Fhir.Core.Models;
 using Microsoft.Health.Fhir.Tests.Common.FixtureParameters;
 using Microsoft.Health.Fhir.Web;
 using Newtonsoft.Json;
@@ -99,6 +101,8 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            Provider = new VersionSpecificModelInfoProvider();
         }
 
         public bool IsUsingInProcTestServer { get; }
@@ -106,6 +110,8 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest
         public HttpClient HttpClient { get; }
 
         public FhirClient FhirClient { get; }
+
+        public IModelInfoProvider Provider { get; }
 
         protected TestServer Server { get; private set; }
 
