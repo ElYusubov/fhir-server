@@ -27,6 +27,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Rest\HealthTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rest\HistoryTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rest\HttpIntegrationTestFixture.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Rest\OperationVersionsTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rest\ReadTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rest\Search\BasicSearchTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rest\Search\ChainingSearchTests.cs" />
